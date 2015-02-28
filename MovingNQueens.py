@@ -173,3 +173,38 @@ class MovingNQueens():
                 bestSolution=current
             #}
         return bestSolution
+
+#________________
+if __name__=="__main__":
+    numQueens= input()
+    queenRows=[]
+    queenCols=[]
+    for i in range(numQueens):
+        queenRows.append(input())
+# it just gives numQueens again
+    input()
+    for i in range(numQueens):
+        queenCols.append(input())
+    ret = rearrange(queenRows,queenCols)
+    print(len(ret))
+    for i in range(len(ret)):
+        print ret[i]
+    import sys
+    sys.stdout.flush()
+
+# len = parseInt(readLine())
+#     for (i=0; i < len; i++)
+#         queenRows[i] = parseInt(readLine())
+#
+#     len = parseInt(readLine())
+#     for (i=0; i < len; i++)
+#         queenCols[i] = parseInt(readLine())
+#
+#     ret = rearrange(queenRows, queenCols)
+#
+# printLine(length(ret[i]))
+#     for (i=0; i < length(ret[i]); i++)
+#         printLine(ret[i])
+#
+# flush(stdout)
+#
