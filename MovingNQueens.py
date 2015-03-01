@@ -10,10 +10,11 @@ But I need to keep the order constant. Many functions need to be changed to refl
 
 
 class MovingNQueens():
-    def rearrange(queenRows, queenCols):
-        return fullSolve(zip(queenRows,queenCols))
+    def rearrange(self,queenRows, queenCols):
+        #print self.fullSolve(zip(queenRows,queenCols))
+        return self.fullSolve(zip(queenRows,queenCols))[2]
 
-    def attackLines(queens):
+    def attackLines(self,queens):
         #Since I know there are at most 100 queens. Perhaps I don't want to use a hashtable.
         xs={}
         ys={}
@@ -26,10 +27,7 @@ class MovingNQueens():
             dds[queen[0]+queen[1]]=1+dds.get(queen[0]+queen[1],0)
         return (xs,ys,dus,dds)
 
-
-    # In[32]:
-
-    def considerMove(position,state):
+    def considerMove(self,position,state):
         '''State = [queens, attackLines, moves, distance]
         considerMove returns the number of checks a queen who just moved to this position would be in.
         Returns inf if it is an illegal move
@@ -39,128 +37,102 @@ class MovingNQueens():
         if position in state[0]:
             return float("inf")
         xs, ys, dus, dds = state[1]
-        return xs.get(position[0],0) + ys.get(position[1],0)+ dus.get(position[0]-position[1],0) + dds.get(position[0]+position[1],0) -1
+        return xs.get(position[0],0) + ys.get(position[1],0)+ dus.get(position[0]-position[1],0) +\
+         dds.get(position[0]+position[1],0) -1
 
-
-    # In[33]:
-
-    def numChecks(position,state):
+    def numChecks(self,position,state):
         xs, ys, dus, dds = state[1]
-        return xs.get(position[0],0) + ys.get(position[1],0)+ dus.get(position[0]-position[1],0) +     dds.get(position[0]+position[1],0) -4
+        return xs.get(position[0],0) + ys.get(position[1],0)+\
+         dus.get(position[0]-position[1],0) +\
+         dds.get(position[0]+position[1],0) -4
 
-
-
-    # In[34]:
-
-    def isSolved(AL):
+    def isSolved(self,AL):
         #AL stands for attackLines, but I didn't want to name it the same as my function
         for dic in AL:
             if bool([a for a in dic.values() if a != 1]):
                      return False
         return True
 
+    def adjacentSquares(self,p):
+        return ((p[0]+1,p[1]),(p[0],p[1]+1),(p[0]+1,p[1]+1),(p[0]-1,p[1]),(p[0],p[1]-1),\
+        (p[0]-1,p[1]+1),(p[0]+1,p[1]-1),(p[0]-1,p[1]-1))
 
-    # In[35]:
-
-    def adjacentSquares(p):
-        return ((p[0]+1,p[1]),(p[0],p[1]+1),(p[0]+1,p[1]+1),(p[0]-1,p[1]),(p[0],p[1]-1),            (p[0]-1,p[1]+1),(p[0]+1,p[1]-1),(p[0]-1,p[1]-1))
-
-
-    # In[36]:
-
-    def moves(queen,state, considerTheseMoves):
+    def moves(self,queen,state, considerTheseMoves):
         #
-        nC= numChecks(queen,state)
+        nC= self.numChecks(queen,state)
         movelist=[]
         for pos in considerTheseMoves:
-            moveval= considerMove(pos,state)
+            moveval= self.considerMove(pos,state)
             if nC > moveval:
                 movelist.append(((queen,pos),nC-moveval))
         return movelist
 
-
-
-
-
-    # In[37]:
-
-    def bestMove(state,bestMoveType):
+    def bestMove(self,state,bestMoveType):
         if bestMoveType==1:
-            moveType= adjacentSquares
+            moveType= self.adjacentSquares
         else:
-            moveType= lambda q: squaresxAway(q,bestMoveType)
+            moveType= lambda q: self.squaresxAway(q,bestMoveType)
         bestmove= (None,0)
         for queen in state[0]:
-            for move in moves(queen,state,moveType(queen)):
+            for move in self.moves(queen,state,moveType(queen)):
                 if move[1] > bestmove[1]:
                     bestmove=move
         if not bestmove[0] == None:
             return bestmove
         else:
-            return bestMove(state,bestMoveType+1)
+            return self.bestMove(state,bestMoveType+1)
 
-
-
-
-    # In[38]:
-
-    def squaresxAway(p, x):
+    def squaresxAway(self,p, x):
         #NOTE This doesn't make sure the move is valid, it could move through other queens
-        return ((p[0]+x,p[1]),(p[0],p[1]+x),(p[0]+x,p[1]+x),(p[0]-x,p[1]),            (p[0],p[1]-x),(p[0]-x,p[1]+x),(p[0]+x,p[1]-x),(p[0]-x,p[1]-x))
+        return ((p[0]+x,p[1]),(p[0],p[1]+x),(p[0]+x,p[1]+x),(p[0]-x,p[1]),\
+                    (p[0],p[1]-x),(p[0]-x,p[1]+x),(p[0]+x,p[1]-x),(p[0]-x,p[1]-x))
 
-
-
-    # In[39]:
-
-    def makeMove(state,move):
+    def makeMove(self,state,move):
         #State = [queens, AL, moves, distance]
         #move= ((start,end),val)
         queens, AL, moves, distance= state
         queens= list(queens)
         moves=list(moves)
-        queens.remove(move[0][0])
-        queens.append(move[0][1])
+
+        ind = queens.index(move[0][0])
+        queens[ind]= move[0][1]
+        #queens.remove(move[0][0])
+        #queens.append(move[0][1])
+
         #THESE TWO LINES ARE AWFUL. THEY MESS UP THE GLOBAL QUEENS OBJECT!
         #I SHOULD USE TUPLES IF I DON'T WANT MY STUFF MESSED WITH!
         #When I want to optimize more, then I can modify AL in a smart way, but for now:
-        AL= attackLines(queens)
-        moves.append(move[0])
+        AL= self.attackLines(queens)
+        moves.append("{i} {newRow} {newCol}".format(i=ind, newRow=move[0][1][0],newCol= move[0][1][1]))
+
         distance+= max(abs(move[0][0][0]-move[0][1][0]),abs(move[0][0][1]-move[0][1][1]))
         return (queens,AL,moves,distance)
 
-
-
-    # In[40]:
-
-    def solve(state):
+    def solve(self,state):
         #pdb.set_trace()
         #State = [queens, attackLines, moves, distance]
         #if state[3] > bestSolution[1]:
         #    return None
-        if isSolved(state[1]):
+        if self.isSolved(state[1]):
             #if distance < bestFoundDistance:
             #    bestSolution= (moves,distance)
             #print state
             #return locals()
             return state
         else:
-            return solve(makeMove(state,bestMove(state,1)))
+            return self.solve(self.makeMove(state,self.bestMove(state,1)))
 
-
-
-    # In[41]:
-
-    def fullSolve(queens):
+    def fullSolve(self,queens):
         import time
         import random
-        #AL=attackLines(queens)
-        #startingState= [queens,attackLines(queens),[],0]
+        #AL=self.attackLines(queens)
+        #startingState= [queens,self.attackLines(queens),[],0]
         safty=2 #this is in case the last loop takes 6 times longer than my start loop.
         startTime= time.time()
         #parell solve many times:{
-        bestSolution= solve([queens,attackLines(queens),[],0])
+        bestSolution= self.solve([queens,self.attackLines(queens),[],0])
         #print bestSolution
-        #bestSolution= solve([queens,attackLines(queens),[],0])
+        #bestSolution= solve([queens,self.attackLines(queens),[],0])
         #print bestSolution
         #}
         loopTime=startTime-time.time()
@@ -168,7 +140,7 @@ class MovingNQueens():
             #parell solve many times:{
             queens= list(queens)
             random.shuffle(queens)
-            current= solve((queens,attackLines(queens),[],0))
+            current= self.solve((queens,self.attackLines(queens),[],0))
             if current[3]<bestSolution[3]:
                 bestSolution=current
             #}
@@ -185,7 +157,8 @@ if __name__=="__main__":
     input()
     for i in range(numQueens):
         queenCols.append(input())
-    ret = rearrange(queenRows,queenCols)
+
+    ret = MovingNQueens().rearrange(queenRows,queenCols)
     print(len(ret))
     for i in range(len(ret)):
         print ret[i]
