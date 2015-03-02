@@ -1,15 +1,15 @@
-'''
-representation
-
-queens=[spot0,spot1,spot2,spot3...]
-return ["queen# newQueenRow newQueenCol", "queen# newQueenRow newQueenCol"...]
-
-I need to keep the queen order constant. It should be a queen list, and I should update it.
-But I need to keep the order constant. Many functions need to be changed to reflect this.
-
-I only ended up changing one function. This means I can't use randomization. So I only get one solve.
-I figure I have no chance to do well anyway, so I lost interest in optimizing a few days ago.
-'''
+# '''
+# representation
+#
+# queens=[spot0,spot1,spot2,spot3...]
+# return ["queen# newQueenRow newQueenCol", "queen# newQueenRow newQueenCol"...]
+#
+# I need to keep the queen order constant. It should be a queen list, and I should update it.
+# But I need to keep the order constant. Many functions need to be changed to reflect this.
+# 
+# I only ended up changing one function. This means I can't use randomization. So I only get one solve.
+# I figure I have no chance to do well anyway, so I lost interest in optimizing a few days ago.
+# '''
 
 
 class MovingNQueens():
