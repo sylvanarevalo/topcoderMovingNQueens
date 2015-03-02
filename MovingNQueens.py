@@ -6,6 +6,9 @@ return ["queen# newQueenRow newQueenCol", "queen# newQueenRow newQueenCol"...]
 
 I need to keep the queen order constant. It should be a queen list, and I should update it.
 But I need to keep the order constant. Many functions need to be changed to reflect this.
+
+I only ended up changing one function. This means I can't use randomization. So I only get one solve.
+I figure I have no chance to do well anyway, so I lost interest in optimizing a few days ago.
 '''
 
 
@@ -123,26 +126,26 @@ class MovingNQueens():
             return self.solve(self.makeMove(state,self.bestMove(state,1)))
 
     def fullSolve(self,queens):
-        import time
-        import random
+        #import time
+        #import random
         #AL=self.attackLines(queens)
         #startingState= [queens,self.attackLines(queens),[],0]
-        safty=2 #this is in case the last loop takes 6 times longer than my start loop.
-        startTime= time.time()
+        #safty=2 #this is in case the last loop takes 6 times longer than my start loop.
+        #startTime= time.time()
         #parell solve many times:{
         bestSolution= self.solve([queens,self.attackLines(queens),[],0])
         #print bestSolution
         #bestSolution= solve([queens,self.attackLines(queens),[],0])
         #print bestSolution
         #}
-        loopTime=startTime-time.time()
-        while time.time()-startTime < 10-(safty*(loopTime) + 2):
+        #loopTime=startTime-time.time()
+        #while time.time()-startTime < 10-(safty*(loopTime) + 2):
             #parell solve many times:{
-            queens= list(queens)
-            random.shuffle(queens)
-            current= self.solve((queens,self.attackLines(queens),[],0))
-            if current[3]<bestSolution[3]:
-                bestSolution=current
+            #queens= list(queens)
+            #random.shuffle(queens)
+            #current= self.solve((queens,self.attackLines(queens),[],0))
+            #if current[3]<bestSolution[3]:
+                #bestSolution=current
             #}
         return bestSolution
 
